@@ -41,6 +41,8 @@
                 <field name="move_id" readonly="1" options="{'no_create': True, 'no_open': False}"/>
                 <field name="invoice_date" readonly="1"/>
                 <field name="residual_in_payment_currency" readonly="1"/>
+                    <field name="invoice_amount_total" readonly="1"/>
+                    <field name="invoice_currency_id" readonly="1"/>
                 <field name="amount_to_pay"/>
                 <field name="currency_id" readonly="1"/>
             </list>
