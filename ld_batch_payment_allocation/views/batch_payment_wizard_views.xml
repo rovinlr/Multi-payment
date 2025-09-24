@@ -22,7 +22,7 @@
                 <group>
                     <field name="line_ids" nolabel="1">
                         <tree editable="bottom">
-                            <field name="name" readonly="1"/>
+                            <field name="move_id" readonly="1"/>
                             <field name="invoice_date" readonly="1"/>
                             <field name="residual_in_payment_currency" readonly="1"/>
                             <field name="amount_to_pay"/>
