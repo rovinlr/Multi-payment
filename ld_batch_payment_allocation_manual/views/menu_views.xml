@@ -1,0 +1,16 @@
+<odoo>
+  <data>
+    <record id="action_batch_payment_allocation_wizard_manual" model="ir.actions.act_window">
+      <field name="name">Batch Payment Allocation (Manual)</field>
+      <field name="res_model">batch.payment.allocation.wizard</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+      <field name="context">{}</field>
+    </record>
+    <menuitem id="menu_batch_payment_allocation_manual"
+              name="Batch Payment Allocation (Manual)"
+              parent="account.menu_finance_entries"
+              action="action_batch_payment_allocation_wizard_manual"
+              sequence="99"/>
+  </data>
+</odoo>

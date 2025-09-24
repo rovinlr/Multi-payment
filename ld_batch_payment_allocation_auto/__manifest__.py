@@ -9,6 +9,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/batch_payment_wizard_views.xml',
+        'views/menu_views.xml',
     ],
     'installable': True,
     'application': False,
