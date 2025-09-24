@@ -5,8 +5,8 @@
     "version": "19.0.1.0.0",
     "category": "Accounting/Accounting",
     "author": "FenixCR Solutions",
-    "maintainers": ["f-cr"],
-    "website": "https://example.com",
+    "maintainers": ["ld-consulting"],
+    "website": "https://www.fenixcrsolutions.com",
     "license": "LGPL-3",
     "depends": ["account"],
     "data": [

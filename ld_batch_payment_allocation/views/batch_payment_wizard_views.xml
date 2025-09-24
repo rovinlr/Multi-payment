@@ -33,7 +33,7 @@
                     <field name="total_allocation" readonly="1"/>
                 </group>
                 <footer>
-                    <button string="Create Payment & Allocate" type="object" name="action_confirm" class="oe_highlight"/>
+                    <button string="Create Payment &amp; Allocate" type="object" name="action_confirm" class="oe_highlight"/>
                     <button string="Cancel" special="cancel"/>
                 </footer>
             </form>
