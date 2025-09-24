@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_batch_payment_allocation_wizard_form_manual" model="ir.ui.view">
+        <field name="name">batch.payment.allocation.wizard.form.manual</field>
+        <field name="model">batch.payment.allocation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Batch Payment Allocation (Manual)">
+                <group>
+                    <field name="partner_id"/>
+                    <field name="partner_type"/>
+                </group>
+                <field name="line_ids">
+                    <tree editable="bottom">
+                        <field name="move_id"/>
+                        <field name="amount_due" readonly="1"/>
+                        <field name="amount_to_pay"/>
+                        <field name="currency_id" invisible="1"/>
+                    </tree>
+                </field>
+                <footer>
+                    <button name="action_load_invoices" string="Load Invoices" type="object" class="btn-secondary"/>
+                    <button name="action_register_payment" string="Register Payment" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
