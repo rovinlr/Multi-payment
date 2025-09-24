@@ -1,0 +1,20 @@
+# -*- coding: utf-8 -*-
+{
+    "name": "Batch Payment Allocation (One Payment, Many Invoices)",
+    "summary": "Create a single payment and allocate it to multiple invoices with editable per-invoice amounts (QuickBooks-style).",
+    "version": "19.0.1.0.0",
+    "category": "Accounting/Accounting",
+    "author": "LD Consulting",
+    "maintainers": ["ld-consulting"],
+    "website": "https://example.com",
+    "license": "LGPL-3",
+    "depends": ["account"],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/menu.xml",
+        "views/batch_payment_wizard_views.xml"
+    ],
+    "assets": {},
+    "application": False,
+    "installable": True,
+}
