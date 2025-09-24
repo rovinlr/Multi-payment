@@ -1,29 +1,51 @@
 <odoo>
-<data>
-<record id="view_batch_payment_allocation_wizard_form_manual" model="ir.ui.view">
-        <field name="name">batch.payment.allocation.wizard.form.manual</field>
-        <field name="model">batch.payment.allocation.wizard</field>
-        <field name="arch" type="xml">
-            <form string="Batch Payment Allocation (Manual)">
-                <group>
-                    <field name="partner_id"/>
-                    <field name="partner_type"/>
-                </group>
-                <field name="line_ids">
-                    <list editable="bottom">
-                        <field name="move_id"/>
-                        <field name="amount_due" readonly="1"/>
-                        <field name="amount_to_pay"/>
-                        <field name="currency_id" invisible="1"/>
-                    </list>
-                </field>
-                <footer>
-                    <button name="action_load_invoices" string="Load Invoices" type="object" class="btn-secondary"/>
-                    <button name="action_register_payment" string="Register Payment" type="object" class="btn-primary"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel"/>
-                </footer>
-            </form>
-        </field>
+  <data>
+    <record id="view_batch_payment_allocation_wizard_form" model="ir.ui.view">
+      <field name="name">batch.payment.allocation.wizard.form</field>
+      <field name="model">batch.payment.allocation.wizard</field>
+      <field name="arch" type="xml">
+        <form string="Batch Payment Allocation (Manual)">
+          <group>
+            <group>
+              <field name="partner_type"/>
+              <field name="partner_id" options="{'no_create': True}"/>
+              <field name="company_id"/>
+            </group>
+            <group>
+              <field name="journal_id"/>
+              <field name="payment_method_line_id" domain="[('journal_id','=',journal_id)]"/>
+              <field name="payment_currency_id"/>
+              <field name="payment_date"/>
+              <field name="communication"/>
+            </group>
+          </group>
+
+          <group>
+            <field name="line_ids" widget="one2many_list">
+              <list editable="bottom">
+                <field name="move_id" options="{'no_create': True, 'no_open': False}"/>
+                <field name="invoice_date"/>
+                <field name="invoice_amount_total" readonly="1"/>
+                <field name="invoice_currency_id" readonly="1"/>
+                <field name="residual_in_payment_currency" readonly="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="amount_to_pay"/>
+              </list>
+            </field>
+          </group>
+
+          <group>
+            <field name="total_allocation" readonly="1"/>
+          </group>
+
+          <footer>
+            <button name="action_load_invoices" string="Load Invoices" type="object"/>
+            <button name="action_clear_lines" string="Clear Lines" type="object"/>
+            <button name="action_confirm" string="Create Payment &amp; Allocate" type="object" class="oe_highlight"/>
+            <button string="Cancel" special="cancel"/>
+          </footer>
+        </form>
+      </field>
     </record>
-</data>
+  </data>
 </odoo>

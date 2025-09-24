@@ -7,10 +7,7 @@
       <field name="target">new</field>
       <field name="context">{}</field>
     </record>
-    <menuitem id="menu_batch_payment_allocation_auto"
-              name="Batch Payment Allocation"
-              parent="account.menu_finance_entries"
-              action="action_batch_payment_allocation_wizard_auto"
-              sequence="99"/>
+    <menuitem id="menu_batch_payment_allocation_auto" name="Batch Payment Allocation" parent="account.menu_finance_entries"
+              action="action_batch_payment_allocation_wizard_auto" sequence="99"/>
   </data>
 </odoo>
