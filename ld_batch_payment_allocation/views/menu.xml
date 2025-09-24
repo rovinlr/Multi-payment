@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<record id="action_open_batch_payment_allocation_wizard" model="ir.actions.act_window">
-            <field name="name">Asignación de pagos (lote)</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">batch.payment.allocation.wizard</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
-            <field name="context">{}</field>
-        </record>
-        <menuitem id="menu_ld_batch_pay_root" name="Asignación de pagos (lote)"
-                  parent="account.menu_finance_entries"
-                  groups="account.group_account_user"
-                  web_icon="ld_batch_payment_allocation,static/description/icon.png"
-                  action="action_open_batch_payment_allocation_wizard"/>
+    <record id="action_open_batch_payment_allocation_wizard" model="ir.actions.act_window">
+        <field name="name">Batch Payment Allocation</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">batch.payment.allocation.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{}</field>
+    </record>
+    <menuitem id="menu_ld_batch_pay_root" name="Batch Payment Allocation" parent="account.menu_finance" sequence="96" action="action_open_batch_payment_allocation_wizard"/>
 </odoo>

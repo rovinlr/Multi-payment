@@ -21,7 +21,10 @@ class BatchPaymentAllocationWizard(models.TransientModel):
     @api.depends("line_ids.amount_to_pay")
     def _compute_totals(self):
         for w in self:
-            w.total_allocation = sum(w.line_ids.mapped("amount_to_pay"))
+            total = 0.0
+            for l in w.line_ids:
+                total += l.amount_to_pay
+            w.total_allocation = total
 
     @api.onchange("journal_id")
     def _onchange_journal_set_currency(self):
@@ -33,9 +36,12 @@ class BatchPaymentAllocationWizard(models.TransientModel):
     @api.onchange("partner_id", "partner_type", "payment_currency_id", "payment_date")
     def _onchange_partner(self):
         self.line_ids = [(5,0,0)]
-        if not (self.partner_id and self.partner_type and self.payment_currency_id):
+        if not self.partner_id or not self.partner_type or not self.payment_currency_id:
             return
-        inv_types = ["out_invoice"] if self.partner_type == "customer" else ["in_invoice"]
+        if self.partner_type == "customer":
+            inv_types = ["out_invoice"]
+        else:
+            inv_types = ["in_invoice"]
         domain = [
             ("partner_id","=",self.partner_id.id),
             ("state","=","posted"),
@@ -49,6 +55,7 @@ class BatchPaymentAllocationWizard(models.TransientModel):
             residual_in_pay_cur = inv.currency_id._convert(inv.amount_residual, self.payment_currency_id, self.company_id, self.payment_date or fields.Date.context_today(self))
             lines.append((0,0,{
                 "move_id": inv.id,
+                "name": inv.name or inv.ref or inv.display_name,
                 "invoice_date": inv.invoice_date,
                 "residual_in_payment_currency": residual_in_pay_cur,
                 "amount_to_pay": 0.0,
@@ -80,6 +87,7 @@ class BatchPaymentAllocationWizard(models.TransientModel):
         if total <= 0:
             raise UserError(_("Total allocation must be > 0."))
 
+        # Create ONE payment for the total in payment_currency
         payment_vals = {
             "date": self.payment_date,
             "amount": total,
@@ -94,11 +102,13 @@ class BatchPaymentAllocationWizard(models.TransientModel):
         payment = self.env["account.payment"].create(payment_vals)
         payment.action_post()
 
+        # Find the payment's open receivable/payable line
         pay_line = payment.move_id.line_ids.filtered(lambda l: l.account_id.user_type_id.type in ("receivable","payable") and not l.reconciled)
         if not pay_line:
             raise UserError(_("Could not find open receivable/payable line on payment."))
         pay_line = pay_line[0]
 
+        # Allocate per-invoice amounts using partial reconciliations
         company = self.company_id
         for l in self.line_ids.filtered(lambda x: x.amount_to_pay > 0):
             inv = l.move_id
@@ -108,11 +118,22 @@ class BatchPaymentAllocationWizard(models.TransientModel):
             inv_line = inv_line[0]
             amount_company = self.payment_currency_id._convert(l.amount_to_pay, company.currency_id, company, self.payment_date)
 
+            # Determine debit/credit pairing
+            # We need one debit and one credit line for partial reconcile
+            debit_line = pay_line if pay_line.balance > 0 else inv_line if inv_line.balance > 0 else False
+            credit_line = pay_line if pay_line.balance < 0 else inv_line if inv_line.balance < 0 else False
+            if not debit_line or not credit_line:
+                # fallback: rely on Odoo to reconcile whatever is possible
+                (inv_line + pay_line).reconcile()
+                continue
+
+            # Create partial reconcile with specific amount
             self.env["account.partial.reconcile"].create({
-                "debit_move_id": pay_line.id if pay_line.balance > 0 else inv_line.id,
-                "credit_move_id": inv_line.id if pay_line.balance > 0 else pay_line.id,
+                "debit_move_id": debit_line.id if debit_line.balance > 0 else credit_line.id,
+                "credit_move_id": credit_line.id if credit_line.balance < 0 else debit_line.id,
                 "amount": abs(amount_company),
                 "company_currency_id": company.currency_id.id,
+                # Add currency info if needed; Odoo will compute from lines if missing
                 "currency_id": self.payment_currency_id.id,
                 "amount_currency": l.amount_to_pay,
             })
@@ -126,31 +147,19 @@ class BatchPaymentAllocationWizard(models.TransientModel):
         }
         return action
 
-    def action_clear_lines(self):
-        self.ensure_one()
-        self.line_ids = [(5, 0, 0)]
-        return {
-            "type": "ir.actions.act_window",
-            "res_model": "batch.payment.allocation.wizard",
-            "res_id": self.id,
-            "view_mode": "form",
-            "target": "new",
-            "name": _("Batch Payment Allocation"),
-        }
-
 class BatchPaymentAllocationWizardLine(models.TransientModel):
     _name = "batch.payment.allocation.wizard.line"
     _description = "Batch Payment Allocation Line"
 
     wizard_id = fields.Many2one("batch.payment.allocation.wizard", ondelete="cascade")
     move_id = fields.Many2one("account.move", string="Invoice", required=True, readonly=True)
+    name = fields.Char(string="Number", readonly=True)
     invoice_date = fields.Date(string="Invoice Date", readonly=True)
     residual_in_payment_currency = fields.Monetary(string="Residual (Payment Currency)", currency_field="currency_id", readonly=True)
     amount_to_pay = fields.Monetary(string="Amount to Pay", currency_field="currency_id")
     currency_id = fields.Many2one("res.currency", string="Currency", required=True, readonly=True)
-
-    invoice_currency_id = fields.Many2one('res.currency', string='Invoice Currency', related='move_id.currency_id', readonly=True)
-    invoice_amount_total = fields.Monetary(string='Invoice Total', related='move_id.amount_total', currency_field='invoice_currency_id', readonly=True)
+        invoice_currency_id = fields.Many2one('res.currency', string='Invoice Currency', related='move_id.currency_id', readonly=True)
+        invoice_amount_total = fields.Monetary(string='Invoice Total', related='move_id.amount_total', currency_field='invoice_currency_id', readonly=True)
 
     @api.constrains("amount_to_pay")
     def _check_amount(self):
