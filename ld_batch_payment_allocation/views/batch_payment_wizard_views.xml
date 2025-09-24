@@ -20,24 +20,31 @@
                     </group>
                 </group>
                 <group>
-                    <field name="line_ids" nolabel="1">
-                        <tree editable="bottom">
-                                <field name="wizard_id" invisible="1"/>
-                            <field name="move_id" readonly="1" options="{'no_create': True, 'no_open': False}"/>
-                            <field name="invoice_date" readonly="1"/>
-                            <field name="residual_in_payment_currency" readonly="1"/>
-                            <field name="amount_to_pay"/>
-                        </tree>
-                    </field>
-                </group>
-                <group>
-                    <field name="total_allocation" readonly="1"/>
-                </group>
-                <footer>
-                    <button string="Create Payment &amp; Allocate" type="object" name="action_confirm" class="oe_highlight"/>
-                    <button string="Cancel" special="cancel"/>
-                </footer>
-            </form>
-        </field>
+                    <field name=\"line_ids\" widget=\"one2many_list\"/>
     </record>
+<record id="view_batch_payment_allocation_wizard_line_tree" model="ir.ui.view">
+    <field name="name">batch.payment.allocation.wizard.line.tree</field>
+    <field name="model">batch.payment.allocation.wizard.line</field>
+    <field name="arch" type="xml">
+        <tree editable="bottom">
+            <field name="move_id" readonly="1" options="{'no_create': True, 'no_open': False}"/>
+            <field name="invoice_date" readonly="1"/>
+            <field name="residual_in_payment_currency" readonly="1"/>
+            <field name="amount_to_pay"/>
+        </tree>
+    </field>
+</record>
+<record id="view_batch_payment_allocation_wizard_line_tree" model="ir.ui.view">
+    <field name="name">batch.payment.allocation.wizard.line.tree</field>
+    <field name="model">batch.payment.allocation.wizard.line</field>
+    <field name="arch" type="xml">
+        <tree editable="bottom">
+            <field name="move_id" readonly="1" options="{'no_create': True, 'no_open': False}"/>
+            <field name="invoice_date" readonly="1"/>
+            <field name="residual_in_payment_currency" readonly="1"/>
+            <field name="amount_to_pay"/>
+            <field name="currency_id" readonly="1"/>
+        </tree>
+    </field>
+</record>
 </odoo>
