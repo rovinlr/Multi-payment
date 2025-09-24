@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools import float_compare
 
 class BatchPaymentAllocationWizard(models.TransientModel):
     _name = "batch.payment.allocation.wizard"
@@ -127,8 +128,29 @@ class BatchPaymentAllocationWizardLine(models.TransientModel):
     amount_to_pay = fields.Monetary(string="Amount to Pay", currency_field="currency_id")
     currency_id = fields.Many2one(related="wizard_id.payment_currency_id", string="Currency", store=False, readonly=True)
 
+    
     @api.constrains("amount_to_pay")
     def _check_amount(self):
+        for rec in self:
+            if rec.amount_to_pay is None:
+                continue
+            if rec.amount_to_pay < 0:
+                raise ValidationError(_("Amount to pay must be >= 0."))
+            cur = rec.currency_id or rec.wizard_id.payment_currency_id
+            residual = rec.residual_in_payment_currency or 0.0
+            # Compare using currency rounding to avoid false positives due to conversion/rounding
+            if float_compare(rec.amount_to_pay, residual, precision_rounding=cur.rounding) > 0:
+                raise ValidationError(_("Amount to pay cannot exceed the residual."))
+
+    @api.onchange("amount_to_pay")
+    def _onchange_amount_to_pay(self):
+        for rec in self:
+            if rec.amount_to_pay is None:
+                continue
+            residual = rec.residual_in_payment_currency or 0.0
+            if rec.amount_to_pay > residual:
+                rec.amount_to_pay = residual
+
         for rec in self:
             if rec.amount_to_pay is None:
                 continue
