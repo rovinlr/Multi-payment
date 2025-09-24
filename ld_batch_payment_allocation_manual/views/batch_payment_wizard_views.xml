@@ -23,7 +23,7 @@
           <group>
             <field name="line_ids" widget="one2many_list">
               <list editable="bottom">
-                <field name="move_id" domain="[('state','=','posted'),('payment_state','in',('not_paid','partial')),('commercial_partner_id','=',parent.partner_id.commercial_partner_id),('move_type','in',('out_invoice','in_invoice'))]" options="{'no_create': True, 'no_open': False}"/>
+                <field name="move_id" domain="[('state','=','posted'),('payment_state','in',('not_paid','partial')),('commercial_partner_id','=',partner_commercial_id),('move_type','in',('out_invoice','in_invoice'))]" options="{'no_create': True, 'no_open': False}"/>
                 <field name="invoice_date"/>
                 <field name="invoice_amount_total" readonly="1"/>
                 <field name="invoice_currency_id" readonly="1"/>

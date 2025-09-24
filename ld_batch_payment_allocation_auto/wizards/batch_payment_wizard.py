@@ -163,6 +163,8 @@ class BatchPaymentAllocationWizardLine(models.TransientModel):
     currency_id = fields.Many2one("res.currency", string="Currency", required=True, readonly=True)
     invoice_currency_id = fields.Many2one("res.currency", string="Invoice Currency", readonly=True)
     invoice_amount_total = fields.Monetary(string="Invoice Total", currency_field="invoice_currency_id", readonly=True)
+    partner_id_rel = fields.Many2one('res.partner', related='wizard_id.partner_id', readonly=True)
+    partner_commercial_id = fields.Many2one('res.partner', related='wizard_id.partner_id.commercial_partner_id', readonly=True)
 
     @api.constrains("amount_to_pay")
     def _check_amount(self):
