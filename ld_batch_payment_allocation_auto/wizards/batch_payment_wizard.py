@@ -13,7 +13,7 @@ class BatchPaymentAllocationWizard(models.TransientModel):
     journal_id = fields.Many2one("account.journal", string="Payment Journal", required=True, domain="[('type','in',('bank','cash'))]")
     payment_method_line_id = fields.Many2one("account.payment.method.line", string="Payment Method", domain="[('journal_id','=',journal_id)]")
     payment_date = fields.Date(default=fields.Date.context_today, required=True)
-    payment_currency_id = fields.Many2one("res.currency", string="Payment Currency", required=True)
+    payment_currency_id = fields.Many2one("res.currency", string="Payment Currency", required=True, default=lambda self: self.env.company.currency_id.id)
     communication = fields.Char(string="Memo / Reference")
     line_ids = fields.One2many("batch.payment.allocation.wizard.line", "wizard_id", string="Invoices")
     total_allocation = fields.Monetary(string="Total Allocation", currency_field="payment_currency_id", compute="_compute_total_allocation", store=False)
