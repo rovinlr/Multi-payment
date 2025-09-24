@@ -30,8 +30,7 @@ class BatchPaymentAllocationWizard(models.TransientModel):
         else:
             self.payment_currency_id = self.company_id.currency_id.id
 
-    @api.onchange("partner_id", "partner_type", "payment_currency_id", "payment_date"):
-        # Limpiar y volver a poblar líneas
+    @api.onchange("partner_id", "partner_type", "payment_currency_id", "payment_date")
         def _onchange_partner(self):
             self.line_ids = [(5,0,0)]
             if not (self.partner_id and self.partner_type and self.payment_currency_id):
