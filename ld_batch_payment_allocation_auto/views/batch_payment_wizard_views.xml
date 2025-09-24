@@ -22,15 +22,15 @@
 
           <group>
             <field name="line_ids" widget="one2many_list">
-              <list editable="bottom">
-                <field name="move_id" options="{'no_create': True, 'no_open': False}"/>
+              <tree editable="bottom">
+                <field name="move_id" domain="[('state','=','posted'),('payment_state','in',('not_paid','partial')),('commercial_partner_id','=',parent.partner_id.commercial_partner_id),('move_type','in',('out_invoice','in_invoice'))]" options="{'no_create': True, 'no_open': False}"/>
                 <field name="invoice_date"/>
                 <field name="invoice_amount_total" readonly="1"/>
                 <field name="invoice_currency_id" readonly="1"/>
                 <field name="residual_in_payment_currency" readonly="1"/>
                 <field name="currency_id" invisible="1"/>
                 <field name="amount_to_pay"/>
-              </list>
+              </tree>
             </field>
           </group>
 

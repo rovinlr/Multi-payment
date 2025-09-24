@@ -36,17 +36,25 @@ class BatchPaymentAllocationWizard(models.TransientModel):
 
     def _load_invoices(self):
         self.line_ids = [(5,0,0)]
-        if not (self.partner_id and self.partner_type and self.payment_currency_id and self.payment_date):
+        if not (self.partner_id and self.payment_currency_id and self.payment_date):
             return
+        # Try with current partner_type first; if nothing found, try the other and adjust
+        def _search(inv_types):
+            domain = [
+                ("commercial_partner_id","=",self.partner_id.commercial_partner_id.id),
+                ("state","=","posted"),
+                ("move_type","in",inv_types),
+                ("payment_state","in",("not_paid","partial")),
+                ("company_id","=",self.company_id.id),
+            ]
+            return self.env["account.move"].search(domain, order="invoice_date asc, name asc", limit=300)
         inv_types = ["out_invoice"] if self.partner_type == "customer" else ["in_invoice"]
-        domain = [
-            ("commercial_partner_id","=",self.partner_id.commercial_partner_id.id),
-            ("state","=","posted"),
-            ("move_type","in",inv_types),
-            ("payment_state","in",("not_paid","partial")),
-            ("company_id","=",self.company_id.id),
-        ]
-        invoices = self.env["account.move"].search(domain, order="invoice_date asc, name asc", limit=300)
+        invoices = _search(inv_types)
+        if not invoices:
+            alt_types = ["in_invoice"] if self.partner_type == "customer" else ["out_invoice"]
+            invoices = _search(alt_types)
+            if invoices:
+                self.partner_type = "supplier" if alt_types == ["in_invoice"] else "customer"
         lines = []
         for inv in invoices:
             residual_in_pay_cur = inv.currency_id._convert(inv.amount_residual, self.payment_currency_id, self.company_id, self.payment_date)
@@ -148,7 +156,7 @@ class BatchPaymentAllocationWizardLine(models.TransientModel):
     _description = "Batch Payment Allocation Line"
 
     wizard_id = fields.Many2one("batch.payment.allocation.wizard", ondelete="cascade")
-    move_id = fields.Many2one("account.move", string="Invoice", required=True, readonly=True)
+    move_id = fields.Many2one("account.move", string="Invoice", required=True)
     invoice_date = fields.Date(string="Invoice Date", readonly=True)
     residual_in_payment_currency = fields.Monetary(string="Residual (Payment Currency)", currency_field="currency_id", readonly=True)
     amount_to_pay = fields.Monetary(string="Amount to Pay", currency_field="currency_id")
