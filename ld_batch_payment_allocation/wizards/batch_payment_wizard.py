@@ -149,7 +149,6 @@ class BatchPaymentAllocationWizardLine(models.TransientModel):
     amount_to_pay = fields.Monetary(string="Amount to Pay", currency_field="currency_id")
     currency_id = fields.Many2one("res.currency", string="Currency", required=True, readonly=True)
 
-    # Extra context columns (related to invoice for display)
     invoice_currency_id = fields.Many2one('res.currency', string='Invoice Currency', related='move_id.currency_id', readonly=True)
     invoice_amount_total = fields.Monetary(string='Invoice Total', related='move_id.amount_total', currency_field='invoice_currency_id', readonly=True)
 

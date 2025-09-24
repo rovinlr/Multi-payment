@@ -1,96 +1,70 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ld_batch_payment_allocation 19.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-24 00:00+0000\n"
-"PO-Revision-Date: 2025-09-24 00:00+0000\n"
-"Last-Translator: FenixCR Solutions <info@fenixcrsolutions.com>\n"
-"Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: wizards/batch_payment_wizard.py:17
 msgid "Batch Payment Allocation (One payment -> Many invoices)"
 msgstr "Asignación de pagos por lote (un pago → varias facturas)"
 
-#: wizards/batch_payment_wizard.py:28
 msgid "Payment Currency"
 msgstr "Moneda del pago"
 
-#: wizards/batch_payment_wizard.py:29
 msgid "Memo / Reference"
 msgstr "Memo / Referencia"
 
-#: wizards/batch_payment_wizard.py:38
 msgid "Total Allocation"
 msgstr "Total asignado"
 
-#: wizards/batch_payment_wizard.py:74
 msgid "Set a positive amount to pay on at least one invoice."
 msgstr "Indique un monto positivo a pagar en al menos una factura."
 
-#: wizards/batch_payment_wizard.py:76
 msgid "Amounts must be >= 0."
 msgstr "Los montos deben ser ≥ 0."
 
-#: wizards/batch_payment_wizard.py:78
 msgid "You cannot allocate more than the residual on an invoice."
 msgstr "No puede asignar más que el residual de una factura."
 
-#: wizards/batch_payment_wizard.py:82
 msgid "No payment method lines available on the selected journal."
 msgstr "No hay métodos de pago disponibles en el diario seleccionado."
 
-#: wizards/batch_payment_wizard.py:86
 msgid "Total allocation must be > 0."
 msgstr "El total asignado debe ser > 0."
 
-#: wizards/batch_payment_wizard.py:98
 msgid "Batch payment for %s"
 msgstr "Pago por lote para %s"
 
-#: wizards/batch_payment_wizard.py:103
 msgid "Could not find open receivable/payable line on payment."
 msgstr "No se encontró una línea abierta por cobrar/pagar en el pago."
 
-#: wizards/batch_payment_wizard.py:132
 msgid "Batch Payment"
 msgstr "Pago por lote"
 
-#: wizards/batch_payment_wizard.py:146
 msgid "Invoice Date"
 msgstr "Fecha factura"
 
-#: wizards/batch_payment_wizard.py:147
 msgid "Residual (Payment Currency)"
 msgstr "Residual (moneda del pago)"
 
-#: wizards/batch_payment_wizard.py:148
 msgid "Amount to Pay"
 msgstr "Monto a pagar"
 
-#: wizards/batch_payment_wizard.py:149
 msgid "Currency"
 msgstr "Moneda"
 
-#: views/batch_payment_wizard_views.xml:14
 msgid "Batch Payment Allocation"
 msgstr "Asignación de pagos por lote"
 
-#: views/batch_payment_wizard_views.xml:33
 msgid "Create Payment &amp; Allocate"
 msgstr "Crear pago y asignar"
 
-#: views/batch_payment_wizard_views.xml:34
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: views/batch_payment_wizard_views.xml:32
 msgid "Clear Lines"
 msgstr "Limpiar líneas"
 
-#: views/menu.xml:4
 msgid "Asignación de pagos (lote)"
 msgstr "Asignación de pagos (lote)"

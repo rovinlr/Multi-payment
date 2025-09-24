@@ -2,7 +2,7 @@
 {
     "name": "Batch Payment Allocation (One Payment, Many Invoices)",
     "summary": "Create a single payment and allocate it to multiple invoices with editable per-invoice amounts (QuickBooks-style).",
-    "version": "19.0.1.0.4",
+    "version": "19.0.1.0.5",
     "category": "Accounting/Accounting",
     "author": "FenixCR Solutions",
     "maintainers": ["fenixcrsolutions"],
