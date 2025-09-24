@@ -39,7 +39,7 @@ class BatchPaymentAllocationWizard(models.TransientModel):
             return
         inv_types = ["out_invoice"] if self.partner_type == "customer" else ["in_invoice"]
         domain = [
-            ("partner_id","=",self.partner_id.id),
+            ("commercial_partner_id","=",self.partner_id.commercial_partner_id.id),
             ("state","=","posted"),
             ("move_type","in",inv_types),
             ("payment_state","in",("not_paid","partial")),
