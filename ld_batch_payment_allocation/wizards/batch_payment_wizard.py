@@ -43,7 +43,7 @@ class BatchPaymentAllocationWizard(models.TransientModel):
                 continue
             # Convert residual to chosen payment currency
             residual_pay_cur = mv.company_currency_id._convert(
-                residual_company, self.payment_currency_id, self.company_id, fields.Date.today()
+                residual_company, self.payment_currency_id, self.company_id, self.payment_date or fields.Date.context_today(self)
             )
             lines.append((0, 0, {
                 "move_id": mv.id,
@@ -89,6 +89,22 @@ class BatchPaymentAllocationWizard(models.TransientModel):
         move_ids = chosen.mapped("move_id").ids
         payment_direction, partner_type = self._compute_payment_direction()
 
+        # Clamp each selected line to its residual (currency-aware) to avoid tiny FX/rounding issues
+        clamped_amounts = []
+        for line in chosen:
+            cur = line.currency_id or self.payment_currency_id
+            residual = line.residual_in_payment_currency or 0.0
+            amt = line.amount_to_pay or 0.0
+            if amt > residual:
+                amt = residual
+            if amt < 0:
+                amt = 0.0
+            clamped_amounts.append(amt)
+
+        total_amount = sum(clamped_amounts)
+        if total_amount <= 0:
+            raise UserError(_("Total amount to pay must be greater than zero."))
+
         # NOTE: In Odoo 18/19, account.payment.register handles grouped payments across multiple invoices.
         # It will allocate against selected invoices automatically. Fine-grained per-invoice allocation is
         # not exposed in the wizard API. We record a single payment for the sum and let reconciliation handle it.
@@ -97,7 +113,7 @@ class BatchPaymentAllocationWizard(models.TransientModel):
             "journal_id": self.journal_id.id,
             "payment_method_line_id": self.payment_method_line_id.id,
             
-            "amount": sum(chosen.mapped("amount_to_pay")),
+            "amount": total_amount,
             "group_payment": True,
             "communication": self.communication or "",
         }
@@ -136,13 +152,8 @@ class BatchPaymentAllocationWizardLine(models.TransientModel):
                 continue
             if rec.amount_to_pay < 0:
                 raise ValidationError(_("Amount to pay must be >= 0."))
-            cur = rec.currency_id or rec.wizard_id.payment_currency_id
-            residual = rec.residual_in_payment_currency or 0.0
-            # Compare using currency rounding to avoid false positives due to conversion/rounding
-            if float_compare(rec.amount_to_pay, residual, precision_rounding=cur.rounding) > 0:
-                raise ValidationError(_("Amount to pay cannot exceed the residual."))
 
-    @api.onchange("amount_to_pay")
+    @api.onchange("amount_to_pay")("amount_to_pay")
     def _onchange_amount_to_pay(self):
         for rec in self:
             if rec.amount_to_pay is None:
