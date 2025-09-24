@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="view_batch_payment_allocation_wizard_form_manual" model="ir.ui.view">
+<data>
+<record id="view_batch_payment_allocation_wizard_form_manual" model="ir.ui.view">
         <field name="name">batch.payment.allocation.wizard.form.manual</field>
         <field name="model">batch.payment.allocation.wizard</field>
         <field name="arch" type="xml">
@@ -25,4 +25,5 @@
             </form>
         </field>
     </record>
+</data>
 </odoo>
