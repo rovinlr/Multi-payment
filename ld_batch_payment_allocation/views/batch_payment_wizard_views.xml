@@ -26,6 +26,7 @@
                     <field name="total_allocation" readonly="1"/>
                 </group>
                 <footer>
+                    <button string="Clear Lines" type="object" name="action_clear_lines"/>
                     <button string="Create Payment &amp; Allocate" type="object" name="action_confirm" class="oe_highlight"/>
                     <button string="Cancel" special="cancel"/>
                 </footer>
@@ -37,14 +38,14 @@
         <field name="name">batch.payment.allocation.wizard.line.tree</field>
         <field name="model">batch.payment.allocation.wizard.line</field>
         <field name="arch" type="xml">
-            <list editable="bottom">
+            <list editable="bottom" delete="true">
                 <field name="move_id" readonly="1" options="{'no_create': True, 'no_open': False}"/>
                 <field name="invoice_date" readonly="1"/>
+                <field name="invoice_amount_total" readonly="1"/>
+                <field name="invoice_currency_id" readonly="1"/>
                 <field name="residual_in_payment_currency" readonly="1"/>
-                    <field name="invoice_amount_total" readonly="1"/>
-                    <field name="invoice_currency_id" readonly="1"/>
-                <field name="amount_to_pay"/>
                 <field name="currency_id" readonly="1"/>
+                <field name="amount_to_pay"/>
             </list>
         </field>
     </record>
