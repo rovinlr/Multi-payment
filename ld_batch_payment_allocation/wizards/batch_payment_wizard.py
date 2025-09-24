@@ -12,7 +12,7 @@ class BatchPaymentAllocationWizard(models.TransientModel):
     journal_id = fields.Many2one("account.journal", string="Payment Journal", required=True, domain="[('type','in',('bank','cash'))]")
     payment_method_line_id = fields.Many2one("account.payment.method.line", string="Payment Method", domain="[('journal_id','=',journal_id)]")
     payment_date = fields.Date(default=fields.Date.context_today, required=True)
-    payment_currency_id = fields.Many2one("res.currency", string="Payment Currency", required=True, default=lambda self: self.env.company.currency_id.id)
+    payment_currency_id = fields.Many2one("res.currency", string="Payment Currency", required=True, default=lambda self: self.env.company.currency_id)
     communication = fields.Char(string="Memo / Reference")
     total_to_pay = fields.Monetary(string="Total to Pay", currency_field="payment_currency_id", compute="_compute_total_to_pay", store=False)
     line_ids = fields.One2many("batch.payment.allocation.wizard.line", "wizard_id", string="Invoices")
@@ -48,7 +48,7 @@ class BatchPaymentAllocationWizard(models.TransientModel):
                 "move_id": mv.id,
                 "name": mv.name,
                 "invoice_date": mv.invoice_date,
-                "currency_id": self.payment_currency_id.id,
+                
                 "residual_in_payment_currency": residual_pay_cur,
                 "amount_to_pay": residual_pay_cur,
             }))
@@ -95,7 +95,7 @@ class BatchPaymentAllocationWizard(models.TransientModel):
             "payment_date": self.payment_date,
             "journal_id": self.journal_id.id,
             "payment_method_line_id": self.payment_method_line_id.id,
-            "currency_id": self.payment_currency_id.id,
+            
             "amount": sum(chosen.mapped("amount_to_pay")),
             "group_payment": True,
             "communication": self.communication or "",
@@ -125,7 +125,7 @@ class BatchPaymentAllocationWizardLine(models.TransientModel):
     invoice_date = fields.Date(string="Invoice Date", readonly=True)
     residual_in_payment_currency = fields.Monetary(string="Residual (Payment Currency)", currency_field="currency_id", readonly=True)
     amount_to_pay = fields.Monetary(string="Amount to Pay", currency_field="currency_id")
-    currency_id = fields.Many2one("res.currency", string="Currency", required=True, readonly=True)
+    currency_id = fields.Many2one(related="wizard_id.payment_currency_id", string="Currency", store=False, readonly=True)
 
     @api.constrains("amount_to_pay")
     def _check_amount(self):
