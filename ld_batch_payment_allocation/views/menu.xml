@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <data>
 <record id="action_open_batch_payment_allocation_wizard" model="ir.actions.act_window">
             <field name="name">Asignación de pagos (lote)</field>
             <field name="type">ir.actions.act_window</field>
@@ -14,5 +13,4 @@
                   groups="account.group_account_user"
                   web_icon="ld_batch_payment_allocation,static/description/icon.png"
                   action="action_open_batch_payment_allocation_wizard"/>
-  </data>
 </odoo>
