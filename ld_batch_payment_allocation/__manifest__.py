@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Batch Payment Allocation (One Payment, Many Invoices)",
-    "summary": "Create a single payment and allocate it to multiple invoices with editable per-invoice amounts (QuickBooks-style).",
-    "version": "19.0.1.0.0",
+    "summary": "Create a single payment and allocate it to multiple invoices with editable per-invoice amounts.",
+    "version": "19.0.1.0.1",
     "category": "Accounting/Accounting",
     "author": "FenixCR Solutions",
     "maintainers": ["ld-consulting"],
@@ -16,5 +16,5 @@
     ],
     "assets": {},
     "application": False,
-    "installable": True,
+    "installable": True
 }
